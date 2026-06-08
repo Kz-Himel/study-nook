@@ -125,13 +125,13 @@ export default function Hero() {
             />
 
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
-              <Image
+              {/* <Image
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
                 alt="Modern study room with comfortable seating and natural light"
                 fill
                 className="object-cover"
                 priority
-              />
+              /> */}
             </div>
 
             {/* Floating Cards */}
