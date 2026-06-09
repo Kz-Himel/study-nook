@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
 
 import { AMENITIES } from "@/lib/utils";
 
@@ -15,62 +13,65 @@ import {
 } from "react-icons/fi";
 
 export default function AddRooms() {
-  const router = useRouter();
+  const [selectedAmenities, setSelectedAmenities] =
+    useState([]);
 
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    image: "",
-    floor: "",
-    capacity: "",
-    hourlyRate: "",
-    amenities: [],
-  });
-
-  const [loading, setLoading] = useState(false);
-
-  const toggleAmenity = (a) => {
-    setForm((f) => ({
-      ...f,
-      amenities: f.amenities.includes(a)
-        ? f.amenities.filter((x) => x !== a)
-        : [...f.amenities, a],
-    }));
+  const toggleAmenity = (amenity) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenity)
+        ? prev.filter((a) => a !== amenity)
+        : [...prev, amenity]
+    );
   };
 
-  const handleSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !form.name ||
-      !form.description ||
-      !form.image ||
-      !form.floor ||
-      !form.capacity ||
-      !form.hourlyRate
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
+    const formData = new FormData(
+      e.currentTarget
+    );
 
-    setLoading(true);
+    const room = Object.fromEntries(
+      formData.entries()
+    );
+
+    room.amenities = selectedAmenities;
+
+    room.capacity = Number(room.capacity);
+    room.hourlyRate = Number(
+      room.hourlyRate
+    );
 
     try {
-      await new Promise((r) =>
-        setTimeout(r, 1200)
+      const res = await fetch(
+        "http://localhost:5000/rooms",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify(room),
+        }
       );
 
-      toast.success(
-        "Room added successfully! 🎉"
-      );
+      const data = await res.json();
 
-      router.push("/my-listings");
-    } catch {
-      toast.error(
-        "Failed to add room. Please try again."
-      );
-    } finally {
-      setLoading(false);
+      console.log(data);
+
+      if (data.insertedId) {
+        alert(
+          "Room added successfully!"
+        );
+
+        e.target.reset();
+
+        setSelectedAmenities([]);
+      }
+    } catch (error) {
+      console.log(error);
+
+      alert("Failed to add room");
     }
   };
 
@@ -118,7 +119,7 @@ export default function AddRooms() {
               }}
             >
               <form
-                onSubmit={handleSubmit}
+                onSubmit={onSubmit}
                 className="space-y-5"
               >
                 {/* Room Name */}
@@ -129,14 +130,9 @@ export default function AddRooms() {
 
                   <input
                     type="text"
+                    name="name"
+                    required
                     placeholder="e.g. Quiet Corner Room"
-                    value={form.name}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        name: e.target.value,
-                      })
-                    }
                     className="input-base"
                   />
                 </div>
@@ -148,15 +144,9 @@ export default function AddRooms() {
                   </label>
 
                   <textarea
+                    name="description"
+                    required
                     placeholder="Describe your room..."
-                    value={form.description}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        description:
-                          e.target.value,
-                      })
-                    }
                     rows={4}
                     className="input-base resize-none"
                   />
@@ -171,14 +161,9 @@ export default function AddRooms() {
 
                   <input
                     type="url"
+                    name="image"
+                    required
                     placeholder="https://example.com/room.jpg"
-                    value={form.image}
-                    onChange={(e) =>
-                      setForm({
-                        ...form,
-                        image: e.target.value,
-                      })
-                    }
                     className="input-base"
                   />
                 </div>
@@ -193,14 +178,9 @@ export default function AddRooms() {
 
                     <input
                       type="text"
+                      name="floor"
+                      required
                       placeholder="e.g. 3rd Floor"
-                      value={form.floor}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          floor: e.target.value,
-                        })
-                      }
                       className="input-base"
                     />
                   </div>
@@ -213,16 +193,10 @@ export default function AddRooms() {
 
                     <input
                       type="number"
+                      name="capacity"
+                      required
                       min={1}
                       placeholder="e.g. 4"
-                      value={form.capacity}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          capacity:
-                            e.target.value,
-                        })
-                      }
                       className="input-base"
                     />
                   </div>
@@ -235,16 +209,10 @@ export default function AddRooms() {
 
                     <input
                       type="number"
+                      name="hourlyRate"
+                      required
                       min={1}
                       placeholder="e.g. 5"
-                      value={form.hourlyRate}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          hourlyRate:
-                            e.target.value,
-                        })
-                      }
                       className="input-base"
                     />
                   </div>
@@ -265,7 +233,9 @@ export default function AddRooms() {
                           toggleAmenity(a)
                         }
                         className={`text-xs font-semibold px-3 py-2 rounded-xl border transition-colors ${
-                          form.amenities.includes(a)
+                          selectedAmenities.includes(
+                            a
+                          )
                             ? "bg-[var(--brand)] text-white border-[var(--brand)]"
                             : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--brand)]"
                         }`}
@@ -278,16 +248,9 @@ export default function AddRooms() {
 
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full justify-center py-3 disabled:opacity-60 flex items-center gap-2"
+                  className="btn-primary w-full justify-center py-3 flex items-center gap-2"
                 >
-                  {loading && (
-                    <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  )}
-
-                  {loading
-                    ? "Adding Room..."
-                    : "Add Room"}
+                  Add Room
                 </button>
               </form>
             </div>
