@@ -1,5 +1,5 @@
 import "./globals.css";
-// import { ThemeProvider } from "@/context/ThemeContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { HeroUIProvider } from "@heroui/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,13 +14,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        {/* <ThemeProvider> */}
+        <ThemeProvider>
           {/* <HeroUIProvider> */}
             <Navbar />
             <main className="min-h-screen">{children}</main>
             <Footer />
           {/* </HeroUIProvider> */}
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -14,7 +14,7 @@ import {
   FiPlusSquare,
 } from "react-icons/fi";
 import { HiBookmarkAlt } from "react-icons/hi";
-// import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./ThemeToggle";
 import Image from "next/image";
 
 // Mock auth state - replace with real better-auth session
@@ -102,7 +102,7 @@ export default function Navbar() {
 
           {/* Right controls */}
           <div className="flex items-center gap-3">
-            {/* <ThemeToggle /> */}
+            <ThemeToggle />
 
             {user ? (
               <div className="relative hidden md:block">
@@ -138,7 +138,7 @@ export default function Navbar() {
                   />
                 </button>
 
-                {/* <AnimatePresence> */}
+                <AnimatePresence>
                   {dropdownOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: 8, scale: 0.96 }}
@@ -174,7 +174,7 @@ export default function Navbar() {
                       </button>
                     </motion.div>
                   )}
-                {/* </AnimatePresence> */}
+                </AnimatePresence>
               </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
@@ -203,7 +203,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {/* <AnimatePresence> */}
+      <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -251,7 +251,7 @@ export default function Navbar() {
             </div>
           </motion.div>
         )}
-      {/* </AnimatePresence> */}
+      </AnimatePresence>
     </header>
   );
 }
