@@ -5,14 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff, FiCheck, FiX } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 function PasswordRule({ met, label }) {
   return (
-    <div
-      className={`flex items-center gap-2 text-xs ${
-        met ? "text-green-600" : "text-gray-400"
-      }`}
-    >
+    <div className={`flex items-center gap-2 text-xs ${met ? "text-green-600" : "text-gray-400"}`}>
       {met ? <FiCheck size={12} /> : <FiX size={12} />}
       {label}
     </div>
@@ -43,7 +40,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.name || !form.email || !form.photoUrl || !form.password) {
+    if (!form.name || !form.email || !form.password) {
       toast.error("All fields required");
       return;
     }
@@ -56,22 +53,28 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+      const { data, error } = await authClient.signUp.email({
+        email: form.email,
+        password: form.password,
+        name: form.name,
+        image: form.photoUrl,
       });
 
-      const data = await res.json();
+      console.log("SIGNUP RESPONSE:", { data, error }); // 🔥 debug
 
-      if (!res.ok) throw new Error(data.message);
+      if (error) {
+        toast.error(error?.message || "Signup failed");
+        return;
+      }
 
-      toast.success("Account created!");
-      router.push("/login");
+      if (data) {
+        toast.success("Account created!");
+        router.push("/");
+      }
+
     } catch (err) {
-      toast.error(err.message || "Something went wrong");
+      console.log("SIGNUP ERROR:", err);
+      toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }

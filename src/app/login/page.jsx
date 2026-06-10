@@ -1,0 +1,261 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import {
+  FiMail,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiCheck,
+  FiX,
+} from "react-icons/fi";
+import { FcGoogle } from "react-icons/fc";
+import { HiBookmarkAlt } from "react-icons/hi";
+import { toast } from "react-toastify";
+
+import { authClient } from "@/lib/auth-client";
+
+function PasswordRule({ met, label }) {
+  return (
+    <div
+      className={`flex items-center gap-2 text-xs ${
+        met ? "text-green-500" : "text-[var(--text-muted)]"
+      }`}
+    >
+      {met ? <FiCheck size={12} /> : <FiX size={12} />}
+      {label}
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  const router = useRouter();
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const rules = {
+    length: form.password.length >= 6,
+    upper: /[A-Z]/.test(form.password),
+    lower: /[a-z]/.test(form.password),
+  };
+
+  const pwValid = Object.values(rules).every(Boolean);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!form.email || !form.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (!pwValid) {
+      toast.error("Weak password");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: form.email,
+        password: form.password,
+      });
+
+      if (error) {
+        toast.error(error?.message || "Login failed");
+        return;
+      }
+
+      if (data) {
+        toast.success("Welcome back!");
+        router.push("/");
+      }
+    } catch (err) {
+      console.log("SIGNIN ERROR:", err);
+      toast.error(err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <title>StudyNook – Login</title>
+
+      <section
+        className="min-h-screen flex items-center justify-center py-20 px-4 dot-pattern"
+        style={{ background: "var(--bg-primary)" }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-md"
+        >
+          <div
+            className="rounded-3xl p-8 sm:p-10"
+            style={{
+              background: "var(--bg-card)",
+              border: "1px solid var(--border-color)",
+              boxShadow: "var(--shadow-card)",
+            }}
+          >
+            {/* Logo */}
+            <div className="flex flex-col items-center mb-8">
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                style={{ background: "var(--brand)" }}
+              >
+                <HiBookmarkAlt size={22} color="white" />
+              </div>
+
+              <h1 className="text-2xl font-extrabold text-[var(--text-primary)] tracking-tight">
+                Welcome back
+              </h1>
+
+              <p className="text-sm text-[var(--text-secondary)] mt-1">
+                Sign in to your StudyNook account
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
+                  Email Address
+                </label>
+
+                <div className="relative">
+                  <FiMail
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="you@email.com"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    className="input-base pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
+                  Password
+                </label>
+
+                <div className="relative">
+                  <FiLock
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+                  />
+
+                  <input
+                    type={showPw ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={form.password}
+                    onChange={(e) =>
+                      setForm({ ...form, password: e.target.value })
+                    }
+                    className="input-base pl-10 pr-12"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                  >
+                    {showPw ? <FiEyeOff size={15} /> : <FiEye size={15} />}
+                  </button>
+                </div>
+
+                {/* Password Rules */}
+                {form.password && (
+                  <div className="space-y-1 mt-3">
+                    <PasswordRule
+                      met={rules.length}
+                      label="At least 6 characters"
+                    />
+
+                    <PasswordRule
+                      met={rules.upper}
+                      label="One uppercase letter"
+                    />
+
+                    <PasswordRule
+                      met={rules.lower}
+                      label="One lowercase letter"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full justify-center disabled:opacity-60 py-3 flex items-center gap-2"
+              >
+                {loading && (
+                  <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                )}
+
+                {loading ? "Signing in..." : "Sign In"}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="my-5 flex items-center gap-3">
+              <div
+                className="flex-1 h-px"
+                style={{ background: "var(--border-color)" }}
+              />
+
+              <span className="text-xs text-[var(--text-muted)] font-medium">
+                OR
+              </span>
+
+              <div
+                className="flex-1 h-px"
+                style={{ background: "var(--border-color)" }}
+              />
+            </div>
+
+            {/* Google */}
+            <button className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-[var(--border-color)] text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors">
+              <FcGoogle size={18} />
+              Continue with Google
+            </button>
+
+            {/* Register */}
+            <p className="text-center text-sm text-[var(--text-secondary)] mt-6">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/register"
+                className="text-[var(--brand)] font-semibold hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+          </div>
+        </motion.div>
+      </section>
+    </>
+  );
+}
