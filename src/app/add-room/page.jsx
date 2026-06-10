@@ -5,73 +5,45 @@ import { motion } from "framer-motion";
 
 import { AMENITIES } from "@/lib/utils";
 
-import {
-  FiImage,
-  FiDollarSign,
-  FiUsers,
-  FiMapPin,
-} from "react-icons/fi";
+import { FiImage, FiDollarSign, FiUsers, FiMapPin } from "react-icons/fi";
 
 export default function AddRooms() {
-  const [selectedAmenities, setSelectedAmenities] =
-    useState([]);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
       prev.includes(amenity)
         ? prev.filter((a) => a !== amenity)
-        : [...prev, amenity]
+        : [...prev, amenity],
     );
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData(
-      e.currentTarget
-    );
-
-    const room = Object.fromEntries(
-      formData.entries()
-    );
-
+    const formData = new FormData(e.currentTarget);
+    const room = Object.fromEntries(formData.entries());
     room.amenities = selectedAmenities;
-
     room.capacity = Number(room.capacity);
-    room.hourlyRate = Number(
-      room.hourlyRate
-    );
-
+    room.hourlyRate = Number(room.hourlyRate);
     try {
-      const res = await fetch(
-        "http://localhost:5000/rooms",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify(room),
-        }
-      );
-
+      const res = await fetch("http://localhost:5000/rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(room),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to add room");
+      }
       const data = await res.json();
-
       console.log(data);
-
       if (data.insertedId) {
-        alert(
-          "Room added successfully!"
-        );
-
+        alert("Room added successfully!");
         e.target.reset();
-
         setSelectedAmenities([]);
       }
     } catch (error) {
       console.log(error);
-
-      alert("Failed to add room");
+      alert(error.message);
     }
   };
 
@@ -96,32 +68,23 @@ export default function AddRooms() {
               y: 0,
             }}
           >
-            <span className="brand-badge mb-4 inline-block">
-              Add Listing
-            </span>
+            <span className="brand-badge mb-4 inline-block">Add Listing</span>
 
-            <h1 className="section-heading mb-2">
-              List Your Study Room
-            </h1>
+            <h1 className="section-heading mb-2">List Your Study Room</h1>
 
             <p className="text-[var(--text-secondary)] text-sm mb-8">
-              Fill in the details below to list your
-              room on StudyNook.
+              Fill in the details below to list your room on StudyNook.
             </p>
 
             <div
               className="rounded-3xl p-8"
               style={{
                 background: "var(--bg-card)",
-                border:
-                  "1px solid var(--border-color)",
+                border: "1px solid var(--border-color)",
                 boxShadow: "var(--shadow-card)",
               }}
             >
-              <form
-                onSubmit={onSubmit}
-                className="space-y-5"
-              >
+              <form onSubmit={onSubmit} className="space-y-5">
                 {/* Room Name */}
                 <div>
                   <label className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
@@ -229,13 +192,9 @@ export default function AddRooms() {
                       <button
                         type="button"
                         key={a}
-                        onClick={() =>
-                          toggleAmenity(a)
-                        }
+                        onClick={() => toggleAmenity(a)}
                         className={`text-xs font-semibold px-3 py-2 rounded-xl border transition-colors ${
-                          selectedAmenities.includes(
-                            a
-                          )
+                          selectedAmenities.includes(a)
                             ? "bg-[var(--brand)] text-white border-[var(--brand)]"
                             : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--brand)]"
                         }`}
