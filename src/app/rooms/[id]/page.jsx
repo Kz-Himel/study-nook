@@ -1,3 +1,4 @@
+import RoomEditModal from "@/components/RoomEditModal";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,8 +14,10 @@ import {
 import { HiBookmarkAlt } from "react-icons/hi";
 
 const RoomDetailsPage = async ({ params }) => {
+  const { id } = await params;
+
   const res = await fetch(
-    `http://localhost:5000/rooms/${params.id}`,
+    `http://localhost:5000/rooms/${id}`,
     { cache: "no-store" }
   );
 
@@ -32,7 +35,10 @@ const RoomDetailsPage = async ({ params }) => {
     <>
       <title>{`StudyNook – ${room.name}`}</title>
 
-      <section className="pt-20 pb-20" style={{ background: "var(--bg-primary)" }}>
+      <section
+        className="pt-20 pb-20"
+        style={{ background: "var(--bg-primary)" }}
+      >
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <Link
@@ -45,13 +51,13 @@ const RoomDetailsPage = async ({ params }) => {
 
           <div className="grid lg:grid-cols-2 gap-10">
 
-            <Image
+            {/* <Image
               src={room.image}
               alt={room.name}
               width={600}
               height={400}
               className="rounded-2xl object-cover"
-            />
+            /> */}
 
             <div>
 
@@ -85,7 +91,7 @@ const RoomDetailsPage = async ({ params }) => {
                 ${room.hourlyRate}/hr
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-8">
                 {room.amenities?.map((a) => (
                   <span
                     key={a}
@@ -96,6 +102,37 @@ const RoomDetailsPage = async ({ params }) => {
                 ))}
               </div>
 
+              {/*  ACTION BUTTONS */}
+              <div className="flex flex-wrap gap-3">
+
+                {/* BOOK */}
+                <Link
+                  href={`/rooms/${room._id}/book`}
+                  className="px-5 py-3 rounded-xl bg-black text-white flex items-center gap-2"
+                >
+                  <FiBookOpen />
+                  Book
+                </Link>
+
+                {/* EDIT */}
+                <Link
+                  href={`/rooms/${room._id}/edit`}
+                  className="px-5 py-3 rounded-xl border flex items-center gap-2"
+                >
+                  <RoomEditModal room={room} />
+                  Edit
+                </Link>
+
+                {/* DELETE (UI only for now) */}
+                <button
+                  className="px-5 py-3 rounded-xl border border-red-300 text-red-500 flex items-center gap-2 hover:bg-red-50"
+                >
+                  <FiTrash2 />
+                  Delete
+                </button>
+
+              </div>
+
             </div>
 
           </div>
@@ -103,5 +140,6 @@ const RoomDetailsPage = async ({ params }) => {
       </section>
     </>
   );
-}
+};
+
 export default RoomDetailsPage;
