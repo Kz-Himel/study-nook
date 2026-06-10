@@ -50,6 +50,7 @@ export default function LoginPage() {
 
   const pwValid = Object.values(rules).every(Boolean);
 
+  // ✅ Email Login
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -85,6 +86,19 @@ export default function LoginPage() {
       toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ Google Login
+  const handleGoogleLogin = async () => {
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error("Google login failed");
     }
   };
 
@@ -237,8 +251,12 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Google */}
-            <button className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-[var(--border-color)] text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors">
+            {/* ✅ Google Login */}
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-[var(--border-color)] text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+            >
               <FcGoogle size={18} />
               Continue with Google
             </button>

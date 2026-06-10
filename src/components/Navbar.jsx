@@ -17,11 +17,7 @@ import { HiBookmarkAlt } from "react-icons/hi";
 import ThemeToggle from "./ThemeToggle";
 import Image from "next/image";
 
-// Mock auth state - replace with real better-auth session
-const useAuth = () => ({
-  user: null,
-  signOut: () => {},
-});
+import { authClient } from "@/lib/auth-client";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -29,7 +25,11 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+
+  // ✅ Real session
+  const { data: session, isPending } = authClient.useSession();
+
+  const user = session?.user;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -58,6 +58,17 @@ export default function Navbar() {
         { href: "/my-bookings", label: "My Bookings", icon: HiBookmarkAlt },
       ]
     : [];
+
+  // ✅ Logout function
+  const handleLogout = async () => {
+    await authClient.signOut();
+
+    window.location.href = "/";
+  };
+
+  if (isPending) {
+    return null;
+  }
 
   return (
     <header
@@ -127,7 +138,7 @@ export default function Navbar() {
                   </div>
 
                   <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    {user.name.split(" ")[0]}
+                    {user.name?.split(" ")[0]}
                   </span>
 
                   <FiChevronDown
@@ -166,7 +177,7 @@ export default function Navbar() {
                       <hr className="my-1 border-[var(--border-color)]" />
 
                       <button
-                        onClick={signOut}
+                        onClick={handleLogout}
                         className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors font-medium"
                       >
                         <FiLogOut size={15} />
@@ -201,57 +212,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden overflow-hidden"
-            style={{
-              background: "var(--bg-card)",
-              borderTop: "1px solid var(--border-color)",
-            }}
-          >
-            <div className="px-4 py-4 space-y-1">
-              {[...navLinks, ...privateLinks].map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`block px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-                    isActive(href)
-                      ? "bg-[var(--brand-light)] text-[var(--brand)]"
-                      : "text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]"
-                  }`}
-                >
-                  {label}
-                </Link>
-              ))}
-
-              {!user && (
-                <div className="pt-2 space-y-2">
-                  <Link
-                    href="/login"
-                    className="btn-outline text-sm w-full justify-center"
-                  >
-                    Log in
-                  </Link>
-
-                  <Link
-                    href="/register"
-                    className="btn-primary text-sm w-full justify-center"
-                  >
-                    Register
-                  </Link>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }
