@@ -1,45 +1,44 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Button, Modal } from "@heroui/react";
 import {
-  Modal,
-  Button,
-  Input,
-  TextArea,
-} from "@heroui/react";
+  FiEdit2,
+  FiImage,
+  FiDollarSign,
+  FiMapPin,
+  FiUsers,
+} from "react-icons/fi";
 
-export default function RoomEditModal({ room, onUpdated }) {
+import { AMENITIES } from "@/lib/utils";
+import { toast } from "react-toastify";
+
+export default function RoomEditModal({ room }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
-    name: "",
-    description: "",
-    hourlyRate: "",
-    capacity: "",
-    floor: "",
-  });
+  const [selectedAmenities, setSelectedAmenities] = useState(
+    room?.amenities || []
+  );
 
-  useEffect(() => {
-    if (room) {
-      setForm({
-        name: room.name || "",
-        description: room.description || "",
-        hourlyRate: room.hourlyRate || "",
-        capacity: room.capacity || "",
-        floor: room.floor || "",
-      });
-    }
-  }, [room]);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const toggleAmenity = (amenity) => {
+    setSelectedAmenities((prev) =>
+      prev.includes(amenity)
+        ? prev.filter((a) => a !== amenity)
+        : [...prev, amenity]
+    );
   };
 
-  const handleUpdate = async () => {
-    try {
-      setLoading(true);
+  const onSubmit = async (e) => {
+    e.preventDefault();
 
+    const formData = new FormData(e.currentTarget);
+    const updatedRoom = Object.fromEntries(formData.entries());
+
+    updatedRoom.amenities = selectedAmenities;
+    updatedRoom.capacity = Number(updatedRoom.capacity);
+    updatedRoom.hourlyRate = Number(updatedRoom.hourlyRate);
+
+    try {
       const res = await fetch(
         `http://localhost:5000/rooms/${room._id}`,
         {
@@ -47,84 +46,177 @@ export default function RoomEditModal({ room, onUpdated }) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(form),
+          body: JSON.stringify(updatedRoom),
         }
       );
 
-      if (!res.ok) throw new Error("Update failed");
+      if (!res.ok) throw new Error("Failed to update room");
 
-      const data = await res.json();
-
-      onUpdated?.(data);
+      toast("Room updated successfully!");
       setIsOpen(false);
+      window.location.reload();
     } catch (err) {
-      alert("Update failed");
-    } finally {
-      setLoading(false);
+      console.error(err);
+      toast(err.message);
     }
   };
 
   return (
     <>
-      {/* MODAL */}
+      {/* OPEN BUTTON */}
+      <Button
+        color="primary"
+        startContent={<FiEdit2 />}
+        onPress={() => setIsOpen(true)}
+      >
+        Edit
+      </Button>
+
+      {/* MODAL (HeroUI v3 style) */}
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
-        <div className="p-6 space-y-4">
+        <Modal.Backdrop>
+          <Modal.Container>
+            <Modal.Dialog className="sm:max-w-[720px] max-h-[90vh] overflow-y-auto">
+              <Modal.CloseTrigger />
 
-          <h2 className="text-lg font-bold">Edit Room</h2>
+              {/* HEADER */}
+              <Modal.Header>
+                <Modal.Heading>Edit Room</Modal.Heading>
+              </Modal.Header>
 
-          <Input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="Room name"
-          />
+              {/* BODY */}
+              <Modal.Body>
+                <form onSubmit={onSubmit} className="space-y-5">
+                  {/* Room Name */}
+                  <div>
+                    <label className="text-sm font-semibold block mb-2">
+                      Room Name *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      defaultValue={room.name}
+                      className="input-base"
+                      required
+                    />
+                  </div>
 
-          <TextArea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Description"
-          />
+                  {/* Description */}
+                  <div>
+                    <label className="text-sm font-semibold block mb-2">
+                      Description *
+                    </label>
+                    <textarea
+                      name="description"
+                      defaultValue={room.description}
+                      rows={4}
+                      className="input-base resize-none"
+                      required
+                    />
+                  </div>
 
-          <Input
-            name="hourlyRate"
-            type="number"
-            value={form.hourlyRate}
-            onChange={handleChange}
-            placeholder="Hourly rate"
-          />
+                  {/* Image */}
+                  <div>
+                    <label className="text-sm font-semibold flex items-center gap-2 mb-2">
+                      <FiImage size={14} />
+                      Image URL *
+                    </label>
+                    <input
+                      type="url"
+                      name="image"
+                      defaultValue={room.image}
+                      className="input-base"
+                      required
+                    />
+                  </div>
 
-          <Input
-            name="capacity"
-            type="number"
-            value={form.capacity}
-            onChange={handleChange}
-            placeholder="Capacity"
-          />
+                  {/* Floor / Capacity / Rate */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-semibold flex items-center gap-1 mb-2">
+                        <FiMapPin size={12} />
+                        Floor
+                      </label>
+                      <input
+                        name="floor"
+                        defaultValue={room.floor}
+                        className="input-base"
+                      />
+                    </div>
 
-          <Input
-            name="floor"
-            value={form.floor}
-            onChange={handleChange}
-            placeholder="Floor"
-          />
+                    <div>
+                      <label className="text-sm font-semibold flex items-center gap-1 mb-2">
+                        <FiUsers size={12} />
+                        Capacity
+                      </label>
+                      <input
+                        type="number"
+                        name="capacity"
+                        defaultValue={room.capacity}
+                        className="input-base"
+                      />
+                    </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+                    <div>
+                      <label className="text-sm font-semibold flex items-center gap-1 mb-2">
+                        <FiDollarSign size={12} />
+                        Rate/hr
+                      </label>
+                      <input
+                        type="number"
+                        name="hourlyRate"
+                        defaultValue={room.hourlyRate}
+                        className="input-base"
+                      />
+                    </div>
+                  </div>
 
-            <Button variant="light" onPress={() => setIsOpen(false)}>
-              Cancel
-            </Button>
+                  {/* Amenities */}
+                  <div>
+                    <label className="text-sm font-semibold block mb-3">
+                      Amenities
+                    </label>
 
-            <Button
-              color="primary"
-              isLoading={loading}
-              onPress={handleUpdate}
-            >
-              Save
-            </Button>
+                    <div className="flex flex-wrap gap-2">
+                      {AMENITIES.map((a) => (
+                        <button
+                          type="button"
+                          key={a}
+                          onClick={() => toggleAmenity(a)}
+                          className={`px-3 py-2 text-xs rounded-xl border ${
+                            selectedAmenities.includes(a)
+                              ? "bg-black text-white"
+                              : ""
+                          }`}
+                        >
+                          {a}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-          </div>
-        </div>
+                  {/* SUBMIT */}
+                  <button
+                    type="submit"
+                    className="btn-primary w-full py-3"
+                  >
+                    Update Room
+                  </button>
+                </form>
+              </Modal.Body>
+
+              {/* FOOTER */}
+              <Modal.Footer>
+                <Button
+                  variant="light"
+                  onPress={() => setIsOpen(false)}
+                >
+                  Cancel
+                </Button>
+              </Modal.Footer>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
       </Modal>
     </>
   );
