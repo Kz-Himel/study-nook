@@ -59,7 +59,7 @@ export default function Navbar() {
       ]
     : [];
 
-  // ✅ Logout function
+  //  Logout function
   const handleLogout = async () => {
     await authClient.signOut();
 
@@ -110,6 +110,7 @@ export default function Navbar() {
               </Link>
             ))}
           </nav>
+
 
           {/* Right controls */}
           <div className="flex items-center gap-3">
