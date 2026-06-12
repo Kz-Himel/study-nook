@@ -1,11 +1,32 @@
 "use client";
 
 import {AlertDialog, Button} from "@heroui/react";
+import { redirect } from "next/navigation";
+import { FiTrash2 } from "react-icons/fi";
 
-export function Default() {
+export default function DeleteAlertDialog({ room }) {
+
+  const {_id, name} = room;
+
+  const handleDelete = async () => {
+    const res = await fetch(`http://localhost:5000/rooms/${_id}`, {
+      method: "DELETE",
+      headers: {
+        'content-type': 'application/json',
+      }
+    });
+
+    const data = await res.json();
+    redirect("/rooms");
+    console.log(data);
+  }
+
   return (
     <AlertDialog>
-      <Button variant="danger">Delete Room</Button>
+      <Button variant="danger">
+        <FiTrash2 />
+        Delete Room
+        </Button>
       <AlertDialog.Backdrop>
         <AlertDialog.Container>
           <AlertDialog.Dialog className="sm:max-w-[400px]">
@@ -16,7 +37,7 @@ export function Default() {
             </AlertDialog.Header>
             <AlertDialog.Body>
               <p>
-                This will permanently delete <strong>My Awesome Room</strong> and all of its
+                This will permanently delete <strong>{name}</strong> and all of its
                 data. This action cannot be undone.
               </p>
             </AlertDialog.Body>
@@ -24,7 +45,7 @@ export function Default() {
               <Button slot="close" variant="tertiary">
                 Cancel
               </Button>
-              <Button slot="close" variant="danger">
+              <Button onClick={handleDelete} slot="close" variant="danger">
                 Delete Room
               </Button>
             </AlertDialog.Footer>

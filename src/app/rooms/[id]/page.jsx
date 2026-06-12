@@ -1,11 +1,11 @@
 import RoomEditModal from "@/components/RoomEditModal";
+import DeleteAlertDialog from "@/components/DeleteAlertDialog"
 import Link from "next/link";
 
 import {
   FiMapPin,
   FiUsers,
   FiBookOpen,
-  FiTrash2,
   FiArrowLeft,
 } from "react-icons/fi";
 
@@ -102,12 +102,7 @@ const RoomDetailsPage = async ({ params }) => {
 
               <RoomEditModal room={room} />
 
-              <button
-                className="px-5 py-3 rounded-xl border border-red-300 text-red-500 flex items-center gap-2"
-              >
-                <FiTrash2 />
-                Delete
-              </button>
+              <DeleteAlertDialog room={room}/>
             </div>
           </div>
         </div>

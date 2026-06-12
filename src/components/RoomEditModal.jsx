@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button, Modal } from "@heroui/react";
 import {
-  FiEdit2,
+  FiEdit,
   FiImage,
   FiDollarSign,
   FiMapPin,
@@ -66,9 +66,10 @@ export default function RoomEditModal({ room }) {
       {/* OPEN BUTTON */}
       <Button
         color="primary"
-        startContent={<FiEdit2 />}
+        startContent={<FiEdit />}
         onPress={() => setIsOpen(true)}
       >
+        <FiEdit />
         Edit
       </Button>
 
