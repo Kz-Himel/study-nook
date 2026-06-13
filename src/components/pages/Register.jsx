@@ -85,7 +85,7 @@ export default function RegisterPage() {
 
       if (data) {
         toast.success("Account created!");
-        router.push("/");
+        router.push("/login");
       }
     } catch (err) {
       console.log("SIGNUP ERROR:", err);

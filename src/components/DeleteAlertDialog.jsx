@@ -39,9 +39,9 @@ export default function DeleteAlertDialog({ room }) {
             <AlertDialog.Body>This action cannot be undone.</AlertDialog.Body>
 
             <AlertDialog.Footer>
-              <Button slot="close">Cancel</Button>
+              <Button slot="close" variant="outline">Cancel</Button>
 
-              <Button color="danger" onClick={handleDelete}>
+              <Button variant="danger" onClick={handleDelete}>
                 Delete
               </Button>
             </AlertDialog.Footer>
