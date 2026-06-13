@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, Modal, Input, TextArea } from "@heroui/react";
 import { toast } from "react-toastify";
+import { IoBookmarksOutline } from "react-icons/io5";
 import { authClient } from "@/lib/auth-client";
 
 const times = [
@@ -99,7 +100,7 @@ export default function BookingModal({ room }) {
         return toast.error(data.message || "Booking failed");
       }
 
-      toast.success("✅ Room booked successfully!");
+      toast.success("Room booked successfully!");
       setIsOpen(false);
       setForm({ date: "", startTime: "", endTime: "", note: "" });
     } catch (error) {
@@ -114,7 +115,9 @@ export default function BookingModal({ room }) {
         onPress={() => setIsOpen(true)} 
         color="primary"
         isDisabled={!room?._id || !user}
+        className="justify-center"
       >
+        <IoBookmarksOutline />
         Book Now
       </Button>
 
