@@ -8,6 +8,10 @@ import { FiMapPin, FiUsers, FiArrowLeft } from "react-icons/fi";
 import { HiBookmarkAlt } from "react-icons/hi";
 import Image from "next/image";
 
+export const metadata = {
+  title: "StudyNook | Room Details",
+};
+
 const RoomDetailsPage = async ({ params }) => {
   const { id } = await params;
 
@@ -105,3 +109,4 @@ const RoomDetailsPage = async ({ params }) => {
 };
 
 export default RoomDetailsPage;
+

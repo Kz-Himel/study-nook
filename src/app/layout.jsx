@@ -5,9 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "StudyNook",
-  description:
-    "Browse and book quiet, private study rooms in your library. List your own room and earn.",
+  title: "StudyNook | Home",
 };
 
 export default function RootLayout({ children }) {
