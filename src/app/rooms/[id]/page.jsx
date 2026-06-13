@@ -95,7 +95,7 @@ const RoomDetailsPage = async ({ params }) => {
             <div className="flex flex-wrap gap-3">
 
               {/* Booking modal button */}
-              <BookingModal room={room}/>
+              <BookingModal room={room} />
 
               {/* Edit modal button */}
               <RoomEditModal room={room} />
