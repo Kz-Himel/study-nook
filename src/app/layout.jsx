@@ -5,14 +5,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "StudyNook | Home",
+  title: "StudyNook",
   description:
     "Browse and book quiet, private study rooms in your library. List your own room and earn.",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning >
+    <html lang="en" className="light" suppressHydrationWarning >
       <body>
         <ThemeProvider>
             <Navbar />

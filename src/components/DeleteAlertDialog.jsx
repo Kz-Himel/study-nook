@@ -25,7 +25,7 @@ export default function DeleteAlertDialog({ room }) {
 
   return (
     <AlertDialog>
-      <Button color="danger">
+      <Button variant="danger">
         <FiTrash2 /> Delete Room
       </Button>
 
@@ -33,14 +33,10 @@ export default function DeleteAlertDialog({ room }) {
         <AlertDialog.Container>
           <AlertDialog.Dialog className="sm:max-w-[400px]">
             <AlertDialog.Header>
-              <AlertDialog.Heading>
-                Delete {name}?
-              </AlertDialog.Heading>
+              <AlertDialog.Heading>Delete {name}?</AlertDialog.Heading>
             </AlertDialog.Header>
 
-            <AlertDialog.Body>
-              This action cannot be undone.
-            </AlertDialog.Body>
+            <AlertDialog.Body>This action cannot be undone.</AlertDialog.Body>
 
             <AlertDialog.Footer>
               <Button slot="close">Cancel</Button>

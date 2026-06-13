@@ -65,8 +65,7 @@ export default function RoomEditModal({ room }) {
     <>
       {/* OPEN BUTTON */}
       <Button
-        color="primary"
-        startContent={<FiEdit />}
+        variant="outline"
         onPress={() => setIsOpen(true)}
       >
         <FiEdit />

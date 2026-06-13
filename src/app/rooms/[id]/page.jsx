@@ -3,33 +3,22 @@ import BookingModal from "@/components/BookingModal";
 import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 import Link from "next/link";
 
-import {
-  FiMapPin,
-  FiUsers,
-  FiArrowLeft,
-} from "react-icons/fi";
+import { FiMapPin, FiUsers, FiArrowLeft } from "react-icons/fi";
 
 import { HiBookmarkAlt } from "react-icons/hi";
+import Image from "next/image";
 
 const RoomDetailsPage = async ({ params }) => {
-
   const { id } = await params;
 
-  const res = await fetch(
-    `http://localhost:5000/rooms/${id}`,
-    {
-      cache: "no-store",
-    }
-  );
+  const res = await fetch(`http://localhost:5000/rooms/${id}`, {
+    cache: "no-store",
+  });
 
   const room = await res.json();
 
   if (!room) {
-    return (
-      <div className="pt-32 text-center">
-        Room not found
-      </div>
-    );
+    return <div className="pt-32 text-center">Room not found</div>;
   }
 
   return (
@@ -46,19 +35,25 @@ const RoomDetailsPage = async ({ params }) => {
           Back to Rooms
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-10">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
+          {/* IMAGE SECTION */}
           <div>
-            <span className="brand-badge mb-4 inline-block">
-              {room.floor}
-            </span>
+            <Image
+              src={room.image || "/placeholder.png"}
+              alt={room.name}
+              width={400}
+              height={400}
+              className="w-full h-[400px] object-cover rounded-xl"
+            />
+          </div>
 
-            <h1 className="text-3xl font-bold mb-3">
-              {room.name}
-            </h1>
+          {/* DETAILS SECTION */}
+          <div>
+            <span className="brand-badge mb-4 inline-block">{room.floor}</span>
 
-            <p className="mb-6">
-              {room.description}
-            </p>
+            <h1 className="text-3xl font-bold mb-3">{room.name}</h1>
+
+            <p className="mb-6">{room.description}</p>
 
             <div className="flex gap-4 mb-6">
               <span className="flex items-center gap-1">
@@ -93,7 +88,6 @@ const RoomDetailsPage = async ({ params }) => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-
               {/* Booking modal button */}
               <BookingModal room={room} />
 
@@ -101,7 +95,7 @@ const RoomDetailsPage = async ({ params }) => {
               <RoomEditModal room={room} />
 
               {/* Delete modal button */}
-              <DeleteAlertDialog room={room}/>
+              <DeleteAlertDialog room={room} />
             </div>
           </div>
         </div>

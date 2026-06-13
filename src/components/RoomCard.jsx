@@ -44,13 +44,13 @@ export default function RoomCard({
     >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
-        {/* <Image
+        <Image
           src={room.image}
           alt={room.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        /> */}
+        />
 
         {/* Heart */}
         <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm">

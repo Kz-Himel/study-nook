@@ -2,21 +2,17 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    domains: ["encrypted-tbn0.gstatic.com"],
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "images.unsplash.com",
+        hostname: "**",
       },
       {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
+        protocol: "http",
+        hostname: "**",
       },
     ],
+
     formats: ["image/avif", "image/webp"],
   },
 

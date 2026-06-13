@@ -26,7 +26,7 @@ export default function Navbar() {
 
   const pathname = usePathname();
 
-  // ✅ Real session
+  // Real session
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
@@ -54,8 +54,8 @@ export default function Navbar() {
   const privateLinks = user
     ? [
         { href: "/add-room", label: "Add Room", icon: FiPlusSquare },
-        { href: "/my-listings", label: "My Listings", icon: FiBookOpen },
         { href: "/my-bookings", label: "My Bookings", icon: HiBookmarkAlt },
+        { href: "/my-listings", label: "My Listings", icon: FiBookOpen },
       ]
     : [];
 
