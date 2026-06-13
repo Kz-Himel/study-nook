@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   const pwValid = Object.values(rules).every(Boolean);
 
-  // ✅ Email Login
+  //  Email Login
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,7 +89,7 @@ export default function LoginPage() {
     }
   };
 
-  // ✅ Google Login
+  // Google Login
   const handleGoogleLogin = async () => {
     try {
       await authClient.signIn.social({

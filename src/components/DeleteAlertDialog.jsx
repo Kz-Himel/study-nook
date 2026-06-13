@@ -18,7 +18,6 @@ export default function DeleteAlertDialog({ room }) {
 
     const data = await res.json();
     redirect("/rooms");
-    console.log(data);
   }
 
   return (

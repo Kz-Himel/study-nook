@@ -94,7 +94,7 @@ export default function RegisterPage() {
     }
   };
 
-  // ✅ Google Login
+  // Google Login
   const handleGoogleLogin = async () => {
     try {
       await authClient.signIn.social({

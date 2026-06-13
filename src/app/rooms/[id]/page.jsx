@@ -1,17 +1,18 @@
 import RoomEditModal from "@/components/RoomEditModal";
-import DeleteAlertDialog from "@/components/DeleteAlertDialog"
+import BookingModal from "@/components/BookingModal";
+import DeleteAlertDialog from "@/components/DeleteAlertDialog";
 import Link from "next/link";
 
 import {
   FiMapPin,
   FiUsers,
-  FiBookOpen,
   FiArrowLeft,
 } from "react-icons/fi";
 
 import { HiBookmarkAlt } from "react-icons/hi";
 
 const RoomDetailsPage = async ({ params }) => {
+
   const { id } = await params;
 
   const res = await fetch(
@@ -92,16 +93,14 @@ const RoomDetailsPage = async ({ params }) => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link
-                href={`/rooms/${room._id}/book`}
-                className="px-5 py-3 rounded-xl bg-black text-white flex items-center gap-2"
-              >
-                <FiBookOpen />
-                Book
-              </Link>
 
+              {/* Booking modal button */}
+              <BookingModal room={room}/>
+
+              {/* Edit modal button */}
               <RoomEditModal room={room} />
 
+              {/* Delete modal button */}
               <DeleteAlertDialog room={room}/>
             </div>
           </div>
