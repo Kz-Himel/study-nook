@@ -7,6 +7,8 @@ import { FiMapPin, FiUsers, FiArrowLeft } from "react-icons/fi";
 
 import { HiBookmarkAlt } from "react-icons/hi";
 import Image from "next/image";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata = {
   title: "StudyNook | Room Details",
@@ -14,9 +16,15 @@ export const metadata = {
 
 const RoomDetailsPage = async ({ params }) => {
   const { id } = await params;
+  const token = await auth.api.getToken({
+    headers: await headers()
+  })
 
   const res = await fetch(`http://localhost:5000/rooms/${id}`, {
-    cache: "no-store",
+    cache: "no-store", 
+    headers: {
+      authorization : `Bearer ${token}`
+    }
   });
 
   const room = await res.json();

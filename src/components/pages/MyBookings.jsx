@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import CancelModal from "@/components/CancelModal";
 
-
 export default function MyBookings() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
@@ -15,20 +14,28 @@ export default function MyBookings() {
   const userId = user?.id;
 
   useEffect(() => {
-    if (!userId) return;
+  if (!userId) return;
 
-    const load = async () => {
-      const res = await fetch(`http://localhost:5000/my-bookings/${userId}`, {
+  const load = async () => {
+    try {
+      const token = await authClient.getToken();
+
+      const res = await fetch("http://localhost:5000/my-bookings", {
         cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${token.token}`,
+        },
       });
 
       const data = await res.json();
-
       setBookings(data);
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    load();
-  }, [userId]);
+  load();
+}, [userId]);
 
   return (
     <div className="p-5 space-y-4 mt-16 md:mt-20">
