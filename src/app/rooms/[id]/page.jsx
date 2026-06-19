@@ -139,6 +139,7 @@ const RoomDetailsPage = async ({ params }) => {
               {isOwner ? (
                 <>
                   {/* ওনার হলে এই দুটি বাটন আসবে */}
+                  <BookingModal room={room} />
                   <RoomEditModal room={room} />
                   <DeleteAlertDialog room={room} />
                 </>

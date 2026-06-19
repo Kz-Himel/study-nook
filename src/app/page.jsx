@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import Features from "@/components/sections/Features";
 import HowItWorks from "@/components/sections/HowItWorks";
+import Rooms from "@/components/sections/Rooms";
 
 export const metadata = {
   title: "StudyNook | Home",
@@ -12,6 +13,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <Rooms />
       <Features />
       <HowItWorks />
     </>
