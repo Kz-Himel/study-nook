@@ -53,7 +53,7 @@ export default function RoomEditModal({ room }) {
       }
 
       const res = await fetch(
-        `http://localhost:5000/rooms/${room._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/${room._id}`,
         {
           method: "PUT",
           headers: {

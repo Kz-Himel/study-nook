@@ -16,9 +16,9 @@ export default function BookingModal({ room }) {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  // Debugging এর জন্য
-  console.log("Session Data:", session);
-  console.log("User Data:", user);
+  // Debugging 
+  // console.log("Session Data:", session);
+  // console.log("User Data:", user);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,15 +55,15 @@ export default function BookingModal({ room }) {
 
     // Real user check with better debugging
     if (!user) {
-      console.log("No user in session");
+      // console.log("No user in session");
       return toast.error("Please login to book a room");
     }
 
-    // যদি _id না থাকে তাহলে id বা অন্য ফিল্ড চেক করো
+    //
     const userId = user._id || user.id;
 
     if (!userId) {
-      console.log("User found but no ID:", user);
+      // console.log("User found but no ID:", user);
       return toast.error("User ID not found. Please login again.");
     }
 
@@ -89,9 +89,9 @@ export default function BookingModal({ room }) {
 
     try {
       const {data: tokenData} = await authClient.token()
-      console.log(tokenData);
+      // console.log(tokenData);
 
-      const res = await fetch("http://localhost:5000/my-bookings", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-bookings`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

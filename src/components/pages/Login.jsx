@@ -44,7 +44,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const rules = {
-    length: form.password.length >= 6,
+    length: form.password.length >= 8,
     upper: /[A-Z]/.test(form.password),
     lower: /[a-z]/.test(form.password),
   };
@@ -83,7 +83,7 @@ export default function LoginPage() {
         router.push("/");
       }
     } catch (err) {
-      console.log("SIGNIN ERROR:", err);
+      // console.log("SIGNIN ERROR:", err);
       toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -204,7 +204,7 @@ export default function LoginPage() {
                   <div className="space-y-1 mt-3">
                     <PasswordRule
                       met={rules.length}
-                      label="At least 6 characters"
+                      label="At least 8 characters"
                     />
 
                     <PasswordRule
@@ -251,7 +251,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* ✅ Google Login */}
+            {/* Google Login */}
             <button
               type="button"
               onClick={handleGoogleLogin}

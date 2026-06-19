@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { AlertDialog, Button } from "@heroui/react";
 import { FiTrash2 } from "react-icons/fi";
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client"; // 👈 ১. ইম্পোর্ট ঠিক করা হলো
+import { authClient } from "@/lib/auth-client"; 
+import { toast } from "react-toastify";
 
 export default function DeleteAlertDialog({ room }) {
   const router = useRouter();
@@ -18,31 +19,30 @@ export default function DeleteAlertDialog({ room }) {
     try {
       setLoading(true);
 
-      // ২. Better Auth থেকে টোকেন নেওয়া
+      // ২. Better Auth token
       const tokenRes = await authClient.token?.();
       const token = tokenRes?.data?.token;
 
       if (!token) {
-        alert("Please login first!");
+        toast("Please login first!");
         return;
       }
 
-      // ৩. হেডার-এ টোকেনসহ ডিলিট রিকোয়েস্ট পাঠানো
-      const res = await fetch(`http://localhost:5000/rooms/${_id}`, {
+      // 
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/rooms/${_id}`, {
         method: "DELETE",
         headers: {
-          "Authorization": `Bearer ${token}`, // Authorization ক্যাপিটাল করা হলো স্ট্যান্ডার্ড অনুযায়ী
+          "Authorization": `Bearer ${token}`, 
         },
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // HeroUI-তে রুট চেঞ্জ এবং রিফ্রেশ করলেই ওল্ড মডাল অটো ক্লিয়ার হয়ে যাবে
         router.push("/rooms");   
         router.refresh(); 
       } else {
-        alert(data.message || "Delete failed");
+        toast.error(data.message || "Delete failed");
       }
     } catch (err) {
       console.log(err);

@@ -48,7 +48,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   const rules = {
-    length: form.password.length >= 6,
+    length: form.password.length >= 8,
     upper: /[A-Z]/.test(form.password),
     lower: /[a-z]/.test(form.password),
   };
@@ -88,7 +88,7 @@ export default function RegisterPage() {
         router.push("/login");
       }
     } catch (err) {
-      console.log("SIGNUP ERROR:", err);
+      // console.log("SIGNUP ERROR:", err);
       toast.error(err?.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -110,7 +110,6 @@ export default function RegisterPage() {
 
   return (
     <>
-      <title>StudyNook – Register</title>
 
       <section
         className="min-h-screen flex items-center justify-center py-20 px-4 dot-pattern"
@@ -259,7 +258,7 @@ export default function RegisterPage() {
                   <div className="space-y-1 mt-3">
                     <PasswordRule
                       met={rules.length}
-                      label="At least 6 characters"
+                      label="At least 8 characters"
                     />
 
                     <PasswordRule

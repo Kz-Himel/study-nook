@@ -20,7 +20,7 @@ export default function CancelModal({ bookingId, setBookings }) {
       }
 
       const res = await fetch(
-        `http://localhost:5000/my-bookings/${bookingId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/my-bookings/${bookingId}`,
         {
           method: "DELETE",
           headers: {
@@ -41,7 +41,7 @@ export default function CancelModal({ bookingId, setBookings }) {
         toast.error(data.message || "Failed to cancel booking.");
       }
     } catch (err) {
-      console.error("Cancellation error:", err);
+      // console.error("Cancellation error:", err);
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);
@@ -50,7 +50,7 @@ export default function CancelModal({ bookingId, setBookings }) {
 
   return (
     <>
-      <Button color="danger" variant="danger" onPress={() => setOpen(true)}>
+      <Button variant="danger" onPress={() => setOpen(true)}>
         Cancel Booking
       </Button>
 

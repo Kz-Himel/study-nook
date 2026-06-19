@@ -39,7 +39,7 @@ export default function MyBookings() {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/my-bookings", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/my-bookings`, {
           headers: {
             authorization: `Bearer ${token}`,
           },
@@ -50,7 +50,7 @@ export default function MyBookings() {
 
         setBookings(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.log("ERROR:", err);
+        // console.log("ERROR:", err);
         setBookings([]);
       } finally {
         setLoading(false);
