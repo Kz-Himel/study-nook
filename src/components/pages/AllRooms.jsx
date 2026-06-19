@@ -10,6 +10,7 @@ import {
 
 import RoomCard from "@/components/RoomCard";
 import { AMENITIES } from "@/lib/utils";
+import LoadingSpinner from "../LoadingSpinner";
 
 const AllRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -41,7 +42,7 @@ const AllRooms = () => {
 
         const data = await res.json();
 
-        console.log(data);
+        // console.log(data);
 
         setRooms(data);
       } catch (error) {
@@ -216,9 +217,7 @@ const AllRooms = () => {
 
           {/* Loading */}
           {loading ? (
-            <div className="text-center py-20">
-              Loading...
-            </div>
+            <LoadingSpinner />
           ) : filtered.length > 0 ? (
             // ROOMS
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

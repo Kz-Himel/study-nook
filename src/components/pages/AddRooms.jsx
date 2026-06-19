@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 
 import { AMENITIES } from "@/lib/utils";
 import { FiImage, FiDollarSign, FiUsers, FiMapPin } from "react-icons/fi";
-import { authClient } from "@/lib/auth-client"; // 👈 Better Auth client import kora holo
-import { toast } from "react-toastify"; // 👈 custom alert bad diye modern toast alert er jonno
+import { authClient } from "@/lib/auth-client"; 
+import { toast } from "react-toastify"; 
 
 export default function AddRooms() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -31,7 +31,6 @@ export default function AddRooms() {
     room.hourlyRate = Number(room.hourlyRate);
 
     try {
-      // 🔑 Better Auth standard client theke runtime secure token load kora
       const tokenRes = await authClient.token?.();
       const token = tokenRes?.data?.token;
 
@@ -41,12 +40,11 @@ export default function AddRooms() {
         return;
       }
 
-      // 🚀 Headers array load-e bearer authentication set kora holo
       const res = await fetch("http://localhost:5000/rooms", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` // 👈 Server ekhon eita theke owner ID pabe
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(room),
       });

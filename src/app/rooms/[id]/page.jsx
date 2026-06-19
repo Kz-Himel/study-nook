@@ -20,12 +20,10 @@ const RoomDetailsPage = async ({ params }) => {
     return <div className="pt-32 text-center">Invalid Room Identifier.</div>;
   }
 
-  // ১. সেশন নেওয়া (টোকেন ফেচ এখান থেকে বাদ দেওয়া হলো কারণ GET রিকোয়েস্টে টোকেন লাগবে না)
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  // ২. রুমের ডেটা ফেচ করা (একদম ক্লিন গেট রিকোয়েস্ট, কোনো হেডার লাগবে না, সবার রুম লোড হবে)
   const res = await fetch(`http://localhost:5000/rooms/${id}`, {
     cache: "no-store",
   });
@@ -44,28 +42,19 @@ const RoomDetailsPage = async ({ params }) => {
     return <div className="pt-32 text-center">Room not found</div>;
   }
 
-  // 🔑 Better Auth থেকে কারেন্ট ইউজারের আইডি বের করা
   const currentUserId = 
     session?.session?.userId || 
     session?.user?.id || 
     session?.user?.sub || 
     session?.user?._id;
 
-  // 🏠 ডাটাবেজ থেকে আসা রুমের আসল ওনার আইডি
   const roomOwnerId = room?.userId || room?.ownerId;
 
-  // 🔍 নিখুঁত এবং সেফ আইডি ম্যাচিং কন্ডিশন
   let isOwner = false;
   if (currentUserId && roomOwnerId) {
     isOwner = String(roomOwnerId).trim() === String(currentUserId).trim();
   }
 
-  // debug-er jonno terminal log auto thakbe
-  console.log("========================= OWNER CHECK =========================");
-  console.log("LOGGED IN USER ID :", currentUserId);
-  console.log("ROOM OWNER FROM DB:", roomOwnerId);
-  console.log("IS CURRENT USER OWNER?:", isOwner);
-  console.log("===============================================================");
 
   return (
     <section
@@ -138,13 +127,11 @@ const RoomDetailsPage = async ({ params }) => {
             <div className="flex flex-wrap gap-3">
               {isOwner ? (
                 <>
-                  {/* ওনার হলে এই দুটি বাটন আসবে */}
                   <BookingModal room={room} />
                   <RoomEditModal room={room} />
                   <DeleteAlertDialog room={room} />
                 </>
               ) : (
-                /* ওনার না হলে শুধু বুকিং বাটন আসবে */
                 <BookingModal room={room} />
               )}
             </div>

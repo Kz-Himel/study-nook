@@ -105,7 +105,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <title>StudyNook – Login</title>
 
       <section
         className="min-h-screen flex items-center justify-center py-20 px-4 dot-pattern"

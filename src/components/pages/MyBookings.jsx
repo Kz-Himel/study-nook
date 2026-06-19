@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import CancelModal from "@/components/CancelModal";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function MyBookings() {
   const { data: session } = authClient.useSession();
@@ -16,23 +17,23 @@ export default function MyBookings() {
   useEffect(() => {
     const load = async () => {
       try {
-        // 🔥 wait until user exists
+        // wait until user exists
         if (!user?.id) return;
 
         setLoading(true);
 
-        // 🔥 FIX: session token use safely
+        // FIX: session token use safely
         const { data: tokenData } = await authClient.token();
         const token = tokenData?.token;
 
-        console.log("TOKEN:", token);
+        // console.log("TOKEN:", token);
 
-        console.log("TOKEN:", token);
-        console.log("SESSION:", session);
-        console.log("USER:", user);
+        // console.log("TOKEN:", token);
+        // console.log("SESSION:", session);
+        // console.log("USER:", user);
 
         if (!token) {
-          console.log("No token found!");
+          // console.log("No token found!");
           setBookings([]);
           setLoading(false);
           return;
@@ -60,10 +61,14 @@ export default function MyBookings() {
   }, [user?.id]);
 
   return (
-    <div className="p-5 space-y-4 mt-16 md:mt-20">
-      <h1 className="text-xl font-bold">My Bookings</h1>
+    <section className="pt-24 pb-20"
+        style={{
+          background: "var(--bg-primary)",
+        }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 className="text-xl font-bold pb-2">My Bookings</h1>
 
-      {loading && <p>Loading bookings...</p>}
+      {loading && <LoadingSpinner />}
 
       {!loading && bookings.length === 0 && <p>You have no bookings yet.</p>}
 
@@ -104,5 +109,6 @@ export default function MyBookings() {
           </div>
         ))}
     </div>
+    </section>
   );
 }
