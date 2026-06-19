@@ -66,7 +66,7 @@ export default function MyBookings() {
           background: "var(--bg-primary)",
         }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 className="text-xl font-bold pb-2">My Bookings</h1>
+      <h1 className="text-3xl font-bold pb-2 md:text-xl">My Bookings</h1>
 
       {loading && <LoadingSpinner />}
 

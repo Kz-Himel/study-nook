@@ -41,7 +41,7 @@ export default function MyListingsPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 mt-15">
-      <h1 className="text-3xl font-bold mb-6">My Listings</h1>
+      <h1 className="text-3xl font-bold mb-6 md:text-xl">My Listings</h1>
 
       {rooms.length === 0 ? (
         <p className="text-gray-500">You didnt create any rooms yet.</p>

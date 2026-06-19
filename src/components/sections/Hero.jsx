@@ -47,8 +47,7 @@ export default function Hero() {
             >
               Find Your{" "}
               <span className="block">
-                Perfect{" "}
-                <span className="gradient-text">Study Space</span>
+                Perfect <span className="gradient-text">Study Space</span>
               </span>
             </motion.h1>
 
@@ -101,7 +100,9 @@ export default function Hero() {
                     <div className="font-bold text-sm text-[var(--text-primary)]">
                       {value}
                     </div>
-                    <div className="text-xs text-[var(--text-muted)]">{label}</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      {label}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -124,13 +125,12 @@ export default function Hero() {
               }}
             />
 
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3]">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] w-full">
               <Image
                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
-                alt="Modern study room with comfortable seating and natural light"
+                alt="study room"
                 fill
                 className="object-cover"
-                priority
               />
             </div>
 
@@ -155,7 +155,9 @@ export default function Hero() {
                 <div className="font-bold text-sm text-[var(--text-primary)]">
                   120+
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">Study Rooms</div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  Study Rooms
+                </div>
               </div>
             </motion.div>
 
@@ -184,7 +186,9 @@ export default function Hero() {
                 <div className="font-bold text-sm text-[var(--text-primary)]">
                   4.9/5
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">User Rating</div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  User Rating
+                </div>
               </div>
             </motion.div>
 
@@ -213,7 +217,9 @@ export default function Hero() {
                 <div className="font-bold text-sm text-[var(--text-primary)]">
                   Instant
                 </div>
-                <div className="text-xs text-[var(--text-muted)]">Book in 30s</div>
+                <div className="text-xs text-[var(--text-muted)]">
+                  Book in 30s
+                </div>
               </div>
             </motion.div>
           </motion.div>
