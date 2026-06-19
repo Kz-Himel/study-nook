@@ -12,9 +12,11 @@ import {
 
 import { AMENITIES } from "@/lib/utils";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client"; // 👈 ensure token extraction works like delete modal
 
 export default function RoomEditModal({ room }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [selectedAmenities, setSelectedAmenities] = useState(
     room?.amenities || []
@@ -30,6 +32,7 @@ export default function RoomEditModal({ room }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const formData = new FormData(e.currentTarget);
     const updatedRoom = Object.fromEntries(formData.entries());
@@ -39,25 +42,42 @@ export default function RoomEditModal({ room }) {
     updatedRoom.hourlyRate = Number(updatedRoom.hourlyRate);
 
     try {
+      // 🔑 Get Token safely from Better Auth client
+      const tokenRes = await authClient.token?.();
+      const token = tokenRes?.data?.token;
+
+      if (!token) {
+        toast.error("Please login first!");
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(
         `http://localhost:5000/rooms/${room._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, // 👈 Token added here
           },
           body: JSON.stringify(updatedRoom),
         }
       );
 
-      if (!res.ok) throw new Error("Failed to update room");
+      const data = await res.json();
 
-      toast("Room updated successfully!");
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to update room");
+      }
+
+      toast.success("Room updated successfully!");
       setIsOpen(false);
       window.location.reload();
     } catch (err) {
       console.error(err);
-      toast(err.message);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,7 +92,7 @@ export default function RoomEditModal({ room }) {
         Edit
       </Button>
 
-      {/* MODAL (HeroUI v3 style) */}
+      {/* MODAL */}
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
         <Modal.Backdrop>
           <Modal.Container>
@@ -95,7 +115,7 @@ export default function RoomEditModal({ room }) {
                     <input
                       type="text"
                       name="name"
-                      defaultValue={room.name}
+                      defaultValue={room?.name}
                       className="input-base"
                       required
                     />
@@ -108,7 +128,7 @@ export default function RoomEditModal({ room }) {
                     </label>
                     <textarea
                       name="description"
-                      defaultValue={room.description}
+                      defaultValue={room?.description}
                       rows={4}
                       className="input-base resize-none"
                       required
@@ -124,7 +144,7 @@ export default function RoomEditModal({ room }) {
                     <input
                       type="url"
                       name="image"
-                      defaultValue={room.image}
+                      defaultValue={room?.image}
                       className="input-base"
                       required
                     />
@@ -139,7 +159,7 @@ export default function RoomEditModal({ room }) {
                       </label>
                       <input
                         name="floor"
-                        defaultValue={room.floor}
+                        defaultValue={room?.floor}
                         className="input-base"
                       />
                     </div>
@@ -152,7 +172,7 @@ export default function RoomEditModal({ room }) {
                       <input
                         type="number"
                         name="capacity"
-                        defaultValue={room.capacity}
+                        defaultValue={room?.capacity}
                         className="input-base"
                       />
                     </div>
@@ -165,7 +185,7 @@ export default function RoomEditModal({ room }) {
                       <input
                         type="number"
                         name="hourlyRate"
-                        defaultValue={room.hourlyRate}
+                        defaultValue={room?.hourlyRate}
                         className="input-base"
                       />
                     </div>
@@ -199,8 +219,9 @@ export default function RoomEditModal({ room }) {
                   <button
                     type="submit"
                     className="btn-primary w-full py-3"
+                    disabled={loading}
                   >
-                    Update Room
+                    {loading ? "Updating..." : "Update Room"}
                   </button>
                 </form>
               </Modal.Body>

@@ -2,27 +2,55 @@
 
 import { useState } from "react";
 import { AlertDialog, Button } from "@heroui/react";
-import { FiTrash2 } from "react-icons/fi";
 import { toast } from "react-toastify";
+import { authClient } from "@/lib/auth-client";
 
 export default function CancelModal({ bookingId, setBookings }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleCancel = async () => {
-    const res = await fetch(`http://localhost:5000/my-bookings/${bookingId}`, {
-      method: "DELETE",
-    });
+    try {
+      setLoading(true);
+      const { data: tokenData } = await authClient.token();
 
-    const data = await res.json();
+      if (!tokenData?.token) {
+        toast.error("Please login first!");
+        return;
+      }
 
-    if (data.success) {
-      setBookings((prev) => prev.filter((b) => b._id !== bookingId));
+      const res = await fetch(
+        `http://localhost:5000/my-bookings/${bookingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${tokenData.token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok && data.deletedCount > 0) {
+        setBookings((prevBookings) =>
+          prevBookings.filter((booking) => booking._id !== bookingId)
+        );
+        toast.success("Booking cancelled successfully!");
+        setOpen(false);
+      } else {
+        toast.error(data.message || "Failed to cancel booking.");
+      }
+    } catch (err) {
+      console.error("Cancellation error:", err);
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <Button variant="danger" onPress={() => setOpen(true)}>
+      <Button color="danger" variant="danger" onPress={() => setOpen(true)}>
         Cancel Booking
       </Button>
 
@@ -37,11 +65,11 @@ export default function CancelModal({ bookingId, setBookings }) {
               <AlertDialog.Body>This action cannot be undone.</AlertDialog.Body>
 
               <AlertDialog.Footer>
-                <Button variant="light" onPress={() => setOpen(false)}>
+                <Button variant="light" onPress={() => setOpen(false)} disabled={loading}>
                   Back
                 </Button>
 
-                <Button color="danger" onPress={handleCancel}>
+                <Button variant="danger" onPress={handleCancel} isLoading={loading}>
                   Confirm Cancel
                 </Button>
               </AlertDialog.Footer>

@@ -4,12 +4,13 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 import { AMENITIES } from "@/lib/utils";
-
 import { FiImage, FiDollarSign, FiUsers, FiMapPin } from "react-icons/fi";
-
+import { authClient } from "@/lib/auth-client"; // 👈 Better Auth client import kora holo
+import { toast } from "react-toastify"; // 👈 custom alert bad diye modern toast alert er jonno
 
 export default function AddRooms() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
@@ -21,36 +22,57 @@ export default function AddRooms() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const room = Object.fromEntries(formData.entries());
     room.amenities = selectedAmenities;
     room.capacity = Number(room.capacity);
     room.hourlyRate = Number(room.hourlyRate);
+
     try {
+      // 🔑 Better Auth standard client theke runtime secure token load kora
+      const tokenRes = await authClient.token?.();
+      const token = tokenRes?.data?.token;
+
+      if (!token) {
+        toast.error("Please login first!");
+        setLoading(false);
+        return;
+      }
+
+      // 🚀 Headers array load-e bearer authentication set kora holo
       const res = await fetch("http://localhost:5000/rooms", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` // 👈 Server ekhon eita theke owner ID pabe
+        },
         body: JSON.stringify(room),
       });
-      if (!res.ok) {
-        throw new Error("Failed to add room");
-      }
+
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to add room");
+      }
+
       console.log(data);
       if (data.insertedId) {
-        alert("Room added successfully!");
+        toast.success("Room added successfully!");
         e.target.reset();
         setSelectedAmenities([]);
       }
     } catch (error) {
       console.log(error);
-      alert(error.message);
+      toast.error(error.message || "Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-
       <section
         className="pt-24 pb-20"
         style={{
@@ -208,8 +230,9 @@ export default function AddRooms() {
                 <button
                   type="submit"
                   className="btn-primary w-full justify-center py-3 flex items-center gap-2"
+                  disabled={loading}
                 >
-                  Add Room
+                  {loading ? "Adding Room..." : "Add Room"}
                 </button>
               </form>
             </div>

@@ -8,27 +8,26 @@ await client.connect();
 const db = client.db("StudyNook");
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db, {
-    
-    client
-  }),
+  database: mongodbAdapter(db, { client }),
+
   emailAndPassword: {
     enabled: true,
   },
+
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_SECRET
-    }
+      clientSecret: process.env.GOOGLE_SECRET,
+    },
   },
+
   session: {
     cookieCache: {
       enabled: true,
       strategy: "jwt",
-      maxAge: 7 * 24 * 60 * 60
-    }
+      maxAge: 7 * 24 * 60 * 60,
+    },
   },
-  plugins: [
-    jwt()
-  ]
+
+  plugins: [jwt()],
 });
