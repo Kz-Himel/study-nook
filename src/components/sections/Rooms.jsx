@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FiArrowRight } from "react-icons/fi";
 import { motion } from "framer-motion";
 import RoomCard from "@/components/RoomCard";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function RoomsSection() {
   const [rooms, setRooms] = useState([]);
@@ -60,7 +61,7 @@ export default function RoomsSection() {
 
         {/* Grid */}
         {loading ? (
-          <p className="text-[var(--text-secondary)]">Loading rooms...</p>
+          <LoadingSpinner />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {firstSixRooms.map((room) => (

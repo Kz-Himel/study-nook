@@ -19,7 +19,7 @@ export default function DeleteAlertDialog({ room }) {
     try {
       setLoading(true);
 
-      // ২. Better Auth token
+      //  Better Auth token
       const tokenRes = await authClient.token?.();
       const token = tokenRes?.data?.token;
 
@@ -45,8 +45,8 @@ export default function DeleteAlertDialog({ room }) {
         toast.error(data.message || "Delete failed");
       }
     } catch (err) {
-      console.log(err);
-      alert("Something went wrong");
+      // console.log(err);
+      toast("Something went wrong");
     } finally {
       setLoading(false);
     }
