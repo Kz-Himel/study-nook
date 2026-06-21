@@ -25,7 +25,7 @@ export default function Navbar() {
 
   const pathname = usePathname();
 
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const user = session?.user;
 
   useEffect(() => {
@@ -59,8 +59,6 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
-  if (isPending) return null;
-
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -69,10 +67,10 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          
-          {/* Logo */}
+
+          {/* LOGO */}
           <Link href="/" className="flex items-center gap-2.5">
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center"
@@ -81,18 +79,18 @@ export default function Navbar() {
               <MdOutlineLocalLibrary size={17} color="white" />
             </div>
 
-            <span className="font-bold text-lg tracking-tight text-[var(--text-primary)]">
+            <span className="font-bold text-lg">
               Study<span style={{ color: "var(--brand)" }}>Nook</span>
             </span>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* DESKTOP NAV */}
           <nav className="hidden md:flex items-center gap-1">
             {[...navLinks, ...privateLinks].map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
-                className={`px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-colors ${
+                className={`px-3 py-2 rounded-xl text-sm font-semibold transition ${
                   isActive(href)
                     ? "bg-[var(--brand-light)] text-[var(--brand)]"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]"
@@ -103,12 +101,11 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right Controls */}
+          {/* RIGHT SIDE */}
           <div className="flex items-center gap-3">
-
             <ThemeToggle />
 
-            {/* USER */}
+            {/* USER MENU (md+) */}
             {user ? (
               <div className="relative hidden md:block">
                 <button
@@ -205,6 +202,7 @@ export default function Navbar() {
             className="md:hidden absolute top-16 left-0 w-full bg-[var(--bg-primary)] border-t border-[var(--border-color)] shadow-lg"
           >
             <div className="flex flex-col p-4 gap-2">
+
               {[...navLinks, ...privateLinks].map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
@@ -217,7 +215,16 @@ export default function Navbar() {
                 </Link>
               ))}
 
-              {!user && (
+              {/* MOBILE AUTH ACTIONS */}
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30"
+                >
+                  <FiLogOut size={16} />
+                  Logout
+                </button>
+              ) : (
                 <>
                   <Link
                     href="/login"
