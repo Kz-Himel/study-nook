@@ -1,6 +1,6 @@
 # 📚 StudyNook – Library Study Room Booking System
 
-🔗 Live Site: https://study-nook-kzhimel.vercel.app/
+🔗 Live Site: https://study-nook-kzhimel.vercel.app/  
 🔗 Client Repo: https://github.com/Kz-Himel/study-nook  
 🔗 Server Repo: https://github.com/Kz-Himel/studynook-server    
 
@@ -146,32 +146,17 @@ This ensures no overlapping bookings for the same room.
 
 ---
 
-## 🏆 Challenge Requirements Fulfilled
-
-✔ JWT authentication with HTTP-only cookies  
-✔ Role-based access control (owner-only edit/delete)  
-✔ Advanced booking conflict system  
-✔ Search & filter system  
-✔ Secure CRUD operations  
-✔ Fully responsive UI  
-✔ Dynamic dashboard system  
-✔ Toast-based notifications (no alerts)  
-✔ Custom 404 page  
-✔ Protected routes persist after reload  
-
----
-
 ## 👨‍💻 Developer Info
 
-**Name:** Your Name  
-**Role:** Full Stack Developer  
+**Name:** Khayruzzaman Himel   
+**Role:** MERN Stack Developer  
 **Stack:** MERN + Next.js  
 
 ---
 
 ## 📌 Notes
 
-This project is built for **CAT_12 Assignment** with full-stack functionality, secure authentication, and production-level UI/UX design.
+This project is built for **Practice, Logic Building and Creativity** with full-stack functionality, secure authentication, and production-level UI/UX design.
 
 All requirements from the assignment brief have been implemented including:
 - Booking system logic
